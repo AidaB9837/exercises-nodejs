@@ -1,0 +1,29 @@
+A test-driven HTTP response
+
+Our integration test in app.test.js expects a JSON response.
+
+1. Change the test to expect an HTML response header: Content-Type: text/html
+
+2. Change the test to expect this HTML in response.text:
+
+<html><body>Welcome to the World Wide Web!</body></html>
+
+3. Run the test with npm test — it should fail.
+4. Update the code in app.js to send the HTTP response the test expects.
+5. Run the test with npm test — it should pass.
+
+------------------------------------------------------------------------------------------------------
+
+Una risposta HTTP basata su test
+
+Il nostro test di integrazione in app.test.js si aspetta una risposta JSON.
+
+1. Modificare il test in modo che preveda un'intestazione di risposta HTML: Content-Type: text/html
+
+2. Modificare il test in modo che si aspetti questo HTML in response.text:
+
+<html><body>Welcome to the World Wide Web!</body></html>
+
+3. Esegui il test con npm test - dovrebbe fallire.
+4. Aggiorna il codice in app.js per inviare la risposta HTTP prevista dal test.
+5. Esegui il test con npm test - dovrebbe passare.
