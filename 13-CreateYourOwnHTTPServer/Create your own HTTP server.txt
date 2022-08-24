@@ -1,0 +1,8 @@
+Create your own HTTP server
+
+Use the techniques you've learnt so far to create your own HTTP server with Express. Your server should:
+
+Automatically recompile and restart when you make changes --> see "dev" script in package.json file
+Have a GET route that sends a JSON response --> see app.ts file
+Have an integration test for the GET route --> see server.test.ts file
+Use an environment variable to configure the server port --> see .env file
