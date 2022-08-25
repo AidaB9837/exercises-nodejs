@@ -1,26 +1,13 @@
 import express from "express";
 import "express-async-errors";
+import prisma from "./lib/prisma/client";
 
 const app = express();
 
-app.get("/people", (req, res) => {
-  res.json([
-    {
-      name: "John",
-      surname: "Smith",
-      age: 30,
-    },
-    {
-      name: "Lisa",
-      surname: "Williams",
-      age: 24,
-    },
-    {
-      name: "Michael",
-      surname: "Jones",
-      age: 18,
-    },
-  ]);
+// GET /person - retrieve all persons
+app.get("/person", async (req, res) => {
+  const person = await prisma.person.findMany();
+  res.json(person);
 });
 
 export default app;
