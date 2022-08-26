@@ -20,7 +20,9 @@ app.get("/person", async (req, res) => {
 
 // POST /person - create a new person
 app.post("/person", validate({ body: personSchema }), async (req, res) => {
-  const person: PersonData = req.body;
+  const personData: PersonData = req.body;
+
+  const person = await prisma.person.create({ data: personData });
   res.status(201).json(person);
 });
 

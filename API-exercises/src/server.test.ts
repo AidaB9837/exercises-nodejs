@@ -42,14 +42,24 @@ describe("GET /person", () => {
 describe("POST /person", () => {
   test("Valid request", async () => {
     const person = {
+      id: 5,
       name: "John",
       surname: "Smith",
       age: 30,
+      createdAt: "2022-08-26T18:03:16.997Z",
+      updatedAt: "2022-08-26T18:03:17.000Z",
     };
+
+    // @ts-ignore
+    prismaMock.person.create.mockResolvedValue(person);
 
     const res = await req
       .post("/person")
-      .send(person)
+      .send({
+        name: "John",
+        surname: "Smith",
+        age: 30,
+      })
       .expect(201)
       .expect("Content-Type", /application\/json/);
 
