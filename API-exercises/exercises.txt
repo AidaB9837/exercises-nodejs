@@ -6,10 +6,16 @@ Create a database for your application and configure Prisma to use it. Then crea
 
 //
 
-Exercises 16: Retrieve all resources
+Exercise 16: Retrieve all resources
 
 In this exercise you'll build on what you created in 'Unit 12, Exercise 1: Create a database and Prisma model'.
 
 Add a route to your API that retrieves all resources.
+
+//
+
+Exercise 17: Create a resource
+
+Add a route to your API that creates a resource. The route should validate the request body data.
 
 //
