@@ -38,6 +38,51 @@ describe("GET /person", () => {
   });
 });
 
+// GET /person - test to retrieve a single person
+describe("GET /person/:id", () => {
+  test("Valid request", async () => {
+    const person = {
+      id: 1,
+      name: "John",
+      surname: "Smith",
+      age: 30,
+      createdAt: "2022-08-25T18:28:13.558Z",
+      updatedAt: "2022-08-25T18:26:39.968Z",
+    };
+
+    // @ts-ignore
+    prismaMock.person.findUnique.mockResolvedValue(person);
+
+    const res = await req
+      .get("/person/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    expect(res.body).toEqual(person);
+  });
+
+  test("Person does not exist", async () => {
+    // @ts-ignore
+    prismaMock.person.findUnique.mockResolvedValue(null);
+
+    const res = await req
+      .get("/person/18")
+      .expect(404)
+      .expect("Content-Type", /text\/html/);
+
+    expect(res.text).toContain("Cannot GET /person/18");
+  });
+
+  test("Invalid personID", async () => {
+    const res = await req
+      .get("/person/asdf")
+      .expect(404)
+      .expect("Content-Type", /text\/html/);
+
+    expect(res.text).toContain("Cannot GET /person/asdf");
+  });
+});
+
 // POST /person - test to create a new person
 describe("POST /person", () => {
   test("Valid request", async () => {
