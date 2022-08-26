@@ -1,5 +1,6 @@
 import express from "express";
 import "express-async-errors";
+import { nextTick } from "process";
 import prisma from "./lib/prisma/client";
 import {
   validate,
@@ -39,6 +40,27 @@ app.post("/person", validate({ body: personSchema }), async (req, res) => {
   const person = await prisma.person.create({ data: personData });
   res.status(201).json(person);
 });
+
+// PUT /person - replaced a person that exist in db
+app.put(
+  "/person/:id(\\d+)",
+  validate({ body: personSchema }),
+  async (req, res, next) => {
+    const personID = Number(req.params.id);
+    const personData: PersonData = req.body;
+
+    try {
+      const person = await prisma.person.update({
+        where: { id: personID },
+        data: personData,
+      });
+      res.status(200).json(person);
+    } catch (error) {
+      res.status(404);
+      next(`Cannot PUT /person/${personID}`);
+    }
+  }
+);
 
 app.use(validationErrorMiddleware);
 
