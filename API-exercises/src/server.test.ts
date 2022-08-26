@@ -201,3 +201,33 @@ describe("PUT /person/:id", () => {
     expect(res.text).toContain("Cannot PUT /person/asdf");
   });
 });
+
+// DELETE /person - test to retrieve a single person
+describe("DELETE /person/:id", () => {
+  test("Valid request", async () => {
+    const res = await req.delete("/person/1").expect(204);
+
+    expect(res.text).toEqual("");
+  });
+
+  test("Person does not exist", async () => {
+    // @ts-ignore
+    prismaMock.person.delete.mockRejectedValue(new Error("Error"));
+
+    const res = await req
+      .delete("/person/18")
+      .expect(404)
+      .expect("Content-Type", /text\/html/);
+
+    expect(res.text).toContain("Cannot DELETE /person/18");
+  });
+
+  test("Invalid personID", async () => {
+    const res = await req
+      .delete("/person/asdf")
+      .expect(404)
+      .expect("Content-Type", /text\/html/);
+
+    expect(res.text).toContain("Cannot DELETE /person/asdf");
+  });
+});

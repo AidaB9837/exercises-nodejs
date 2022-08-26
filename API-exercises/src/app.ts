@@ -62,6 +62,21 @@ app.put(
   }
 );
 
+// DELETE /person - delete a person that exist in db
+app.delete("/person/:id(\\d+)", async (req, res, next) => {
+  const personID = Number(req.params.id);
+
+  try {
+    await prisma.person.delete({
+      where: { id: personID },
+    });
+    res.status(204).end();
+  } catch (error) {
+    res.status(404);
+    next(`Cannot DELETE /person/${personID}`);
+  }
+});
+
 app.use(validationErrorMiddleware);
 
 export default app;
