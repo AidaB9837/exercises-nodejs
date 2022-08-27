@@ -25,3 +25,9 @@ Exercise 18: Retrieve, update and delete a resource
 Add routes to your API for retrieving, updating and deleting a resource.
 
 //
+
+Exercise 19: Add support for CORS to your API
+
+Configure your API to enable CORS for requests from the origin http://localhost:8080.
+
+//

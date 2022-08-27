@@ -1,7 +1,7 @@
 import express from "express";
 import "express-async-errors";
-import { nextTick } from "process";
 import prisma from "./lib/prisma/client";
+import cors from "cors";
 import {
   validate,
   validationErrorMiddleware,
@@ -9,9 +9,13 @@ import {
   PersonData,
 } from "./lib/validation";
 
+const corsOptions = { origin: "http://localhost:8080" };
+
 const app = express();
 
 app.use(express.json());
+
+app.use(cors(corsOptions));
 
 // GET /person - retrieve all persons
 app.get("/person", async (req, res) => {

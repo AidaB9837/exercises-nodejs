@@ -32,7 +32,8 @@ describe("GET /person", () => {
     const res = await req
       .get("/person")
       .expect(200)
-      .expect("Content-Type", /application\/json/);
+      .expect("Content-Type", /application\/json/)
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
 
     expect(res.body).toEqual(persons);
   });
@@ -56,7 +57,8 @@ describe("GET /person/:id", () => {
     const res = await req
       .get("/person/1")
       .expect(200)
-      .expect("Content-Type", /application\/json/);
+      .expect("Content-Type", /application\/json/)
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
 
     expect(res.body).toEqual(person);
   });
@@ -106,7 +108,8 @@ describe("POST /person", () => {
         age: 30,
       })
       .expect(201)
-      .expect("Content-Type", /application\/json/);
+      .expect("Content-Type", /application\/json/)
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
 
     expect(res.body).toEqual(person);
   });
@@ -150,7 +153,8 @@ describe("PUT /person/:id", () => {
         age: 45,
       })
       .expect(200)
-      .expect("Content-Type", /application\/json/);
+      .expect("Content-Type", /application\/json/)
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
 
     expect(res.body).toEqual(person);
   });
@@ -205,7 +209,10 @@ describe("PUT /person/:id", () => {
 // DELETE /person - test to retrieve a single person
 describe("DELETE /person/:id", () => {
   test("Valid request", async () => {
-    const res = await req.delete("/person/1").expect(204);
+    const res = await req
+      .delete("/person/1")
+      .expect(204)
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
 
     expect(res.text).toEqual("");
   });
