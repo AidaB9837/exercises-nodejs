@@ -8,6 +8,9 @@ import {
   personSchema,
   PersonData,
 } from "./lib/validation";
+import { initMulterMiddleware } from "./lib/middleware/multer";
+
+const upload = initMulterMiddleware();
 
 const corsOptions = { origin: "http://localhost:8080" };
 
@@ -80,6 +83,38 @@ app.delete("/person/:id(\\d+)", async (req, res, next) => {
     next(`Cannot DELETE /person/${personID}`);
   }
 });
+
+// POST /person/id/photo - upload a photo file
+app.post(
+  "/person/:id(\\d+)/photo",
+  upload.single("photo"),
+  async (req, res, next) => {
+    console.log("req.file", req.file);
+
+    if (!req.file) {
+      res.status(400);
+      return next("No photo file uploaded.");
+    }
+
+    const personID = Number(req.params.id);
+
+    const photoFilename = req.file.filename;
+
+    try {
+      await prisma.person.update({
+        where: { id: personID },
+        data: { photoFilename },
+      });
+
+      res.status(201).json({ photoFilename });
+    } catch (error) {
+      res.status(404);
+      next(`Cannot POST /person/${personID}/photo`);
+    }
+  }
+);
+
+app.use("/person/photos", express.static("uploads"));
 
 app.use(validationErrorMiddleware);
 

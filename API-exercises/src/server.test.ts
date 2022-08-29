@@ -130,7 +130,7 @@ describe("POST /person", () => {
   });
 });
 
-// PUT /person - test to replaced a person that exist in db
+// PUT /person - test to replace a person that exist in db
 describe("PUT /person/:id", () => {
   test("Valid request", async () => {
     const person = {
@@ -206,7 +206,7 @@ describe("PUT /person/:id", () => {
   });
 });
 
-// DELETE /person - test to retrieve a single person
+// DELETE /person - test to delete a single person
 describe("DELETE /person/:id", () => {
   test("Valid request", async () => {
     const res = await req
@@ -236,5 +236,71 @@ describe("DELETE /person/:id", () => {
       .expect("Content-Type", /text\/html/);
 
     expect(res.text).toContain("Cannot DELETE /person/asdf");
+  });
+});
+
+// POST /person/id/photo -test to upload a photo file
+/**
+ * These test depend on: src/lib/middleware/multer.mock.ts
+ * It uses multer.memoryStorage, so no files are written to disk.
+ */
+describe("POST /person/:id/photo", () => {
+  test("Valid request with PNG file upload", async () => {
+    await req
+      .post("/person/18/photo")
+      .attach("photo", "test-fixtures/photos/lisa-williams.png")
+      .expect(201)
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
+  });
+
+  test("Valid request with JPG file upload", async () => {
+    await req
+      .post("/person/18/photo")
+      .attach("photo", "test-fixtures/photos/john-smith.jpg")
+      .expect(201)
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
+  });
+
+  test("Invalid request with text file upload", async () => {
+    const res = await req
+      .post("/person/18/photo")
+      .attach("photo", "test-fixtures/photos/file.txt")
+      .expect(500)
+      .expect("Content-Type", /text\/html/);
+
+    expect(res.text).toContain(
+      "Error: The uploaded file must be a JGP or a PNG image."
+    );
+  });
+
+  test("Person does not exist", async () => {
+    //@ts-ignore
+    prismaMock.person.update.mockRejectedValue(new Error("Error"));
+
+    const res = await req
+      .post("/person/18/photo")
+      .attach("photo", "test-fixtures/photos/lisa-williams.png")
+      .expect(404)
+      .expect("Content-Type", /text\/html/);
+
+    expect(res.text).toContain("Cannot POST /person/18/photo");
+  });
+
+  test("Invalid personID", async () => {
+    const res = await req
+      .post("/person/asdf/photo")
+      .expect(404)
+      .expect("Content-Type", /text\/html/);
+
+    expect(res.text).toContain("Cannot POST /person/asdf/photo");
+  });
+
+  test("Invalid request with no file upload", async () => {
+    const res = await req
+      .post("/person/18/photo")
+      .expect(400)
+      .expect("Content-Type", /text\/html/);
+
+    expect(res.text).toContain("No photo file uploaded.");
   });
 });
