@@ -1,7 +1,12 @@
 import express, { Router } from "express";
-import prisma from "../prisma/client";
-import { validate, personSchema, PersonData } from "../middleware/validation";
-import { initMulterMiddleware } from "../middleware/multer";
+import prisma from "../lib/prisma/client";
+import {
+  validate,
+  personSchema,
+  PersonData,
+} from "../lib/middleware/validation";
+import { initMulterMiddleware } from "../lib/middleware/multer";
+import { checkAuthorization } from "../lib/middleware/passport";
 
 const upload = initMulterMiddleware();
 
@@ -28,25 +33,42 @@ router.get("/:id(\\d+)", async (req, res, next) => {
 });
 
 // POST /person - create a new person
-router.post("/", validate({ body: personSchema }), async (req, res) => {
-  const personData: PersonData = req.body;
+router.post(
+  "/",
+  checkAuthorization,
+  validate({ body: personSchema }),
+  async (req, res) => {
+    const personData: PersonData = req.body;
+    const username = req.user?.username as string;
 
-  const person = await prisma.person.create({ data: personData });
-  res.status(201).json(person);
-});
+    const person = await prisma.person.create({
+      data: {
+        ...personData,
+        createdBy: username,
+        updatedBy: username,
+      },
+    });
+    res.status(201).json(person);
+  }
+);
 
 // PUT /person - replaced a person that exist in db
 router.put(
   "/:id(\\d+)",
+  checkAuthorization,
   validate({ body: personSchema }),
   async (req, res, next) => {
     const personID = Number(req.params.id);
     const personData: PersonData = req.body;
+    const username = req.user?.username as string;
 
     try {
       const person = await prisma.person.update({
         where: { id: personID },
-        data: personData,
+        data: {
+          ...personData,
+          updatedBy: username,
+        },
       });
       res.status(200).json(person);
     } catch (error) {
@@ -57,7 +79,7 @@ router.put(
 );
 
 // DELETE /person - delete a person that exist in db
-router.delete("/:id(\\d+)", async (req, res, next) => {
+router.delete("/:id(\\d+)", checkAuthorization, async (req, res, next) => {
   const personID = Number(req.params.id);
 
   try {
@@ -74,6 +96,7 @@ router.delete("/:id(\\d+)", async (req, res, next) => {
 // POST /person/id/photo - upload a photo file
 router.post(
   "/:id(\\d+)/photo",
+  checkAuthorization,
   upload.single("photo"),
   async (req, res, next) => {
     console.log("req.file", req.file);

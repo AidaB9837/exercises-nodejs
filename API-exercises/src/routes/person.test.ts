@@ -1,6 +1,6 @@
 import supertest from "supertest";
-import { prismaMock } from "../prisma/client.mock";
-import app from "../../app";
+import { prismaMock } from "../lib/prisma/client.mock";
+import app from "../app";
 
 const req = supertest(app);
 
@@ -33,7 +33,8 @@ describe("GET /person", () => {
       .get("/person")
       .expect(200)
       .expect("Content-Type", /application\/json/)
-      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080")
+      .expect("Access-Control-Allow-Credentials", "true");
 
     expect(res.body).toEqual(persons);
   });
@@ -109,7 +110,8 @@ describe("POST /person", () => {
       })
       .expect(201)
       .expect("Content-Type", /application\/json/)
-      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080")
+      .expect("Access-Control-Allow-Credentials", "true");
 
     expect(res.body).toEqual(person);
   });
@@ -154,7 +156,8 @@ describe("PUT /person/:id", () => {
       })
       .expect(200)
       .expect("Content-Type", /application\/json/)
-      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080")
+      .expect("Access-Control-Allow-Credentials", "true");
 
     expect(res.body).toEqual(person);
   });
@@ -212,7 +215,8 @@ describe("DELETE /person/:id", () => {
     const res = await req
       .delete("/person/1")
       .expect(204)
-      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080")
+      .expect("Access-Control-Allow-Credentials", "true");
 
     expect(res.text).toEqual("");
   });
@@ -258,7 +262,8 @@ describe("POST /person/:id/photo", () => {
       .post("/person/18/photo")
       .attach("photo", "test-fixtures/photos/john-smith.jpg")
       .expect(201)
-      .expect("Access-Control-Allow-Origin", "http://localhost:8080");
+      .expect("Access-Control-Allow-Origin", "http://localhost:8080")
+      .expect("Access-Control-Allow-Credentials", "true");
   });
 
   test("Invalid request with text file upload", async () => {

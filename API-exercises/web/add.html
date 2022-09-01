@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width" , initial-scale="1.0" />
+    <title>Add new person</title>
+  </head>
+  <body>
+    <p>
+      <a
+        href="http://localhost:3001/auth/login?redirectTo=http://localhost:8080/add"
+      >Login</a>
+
+      <form action="http://localhost:3001/person" id="form-add">
+        <label>
+            <strong>Name:</strong>
+            <input type="text" name="name"/>
+        </label>
+
+        <label>
+            <strong>Surname:</strong>
+            <input type="text" name="surname"/>
+        </label>
+
+        <label>
+            <strong>Age:</strong>
+            <input type="number" name="age"/>
+        </label>
+
+        <input type="submit" value="Add person"/>
+      </form>
+    </p>
+
+    <script>
+        async function addPerson(event) {
+            event.preventDefault();
+
+            const form = event.currentTarget;
+
+            const formData = new FormData(form);
+            const plainFormData = Object.fromEntries(formData.entries());
+            const formDataJsonString = JSON.stringify(plainFormData);
+            
+            const url = form.action;
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: formDataJsonString,
+                credentials:"include",
+            });
+
+            const person = await response.json();
+
+            console.dir(person);
+        }
+
+        const addForm = document.getElementById("form-add");
+
+        addForm.addEventListener("submit", addPerson);
+        
+    </script>
+  </body>
+</html>
