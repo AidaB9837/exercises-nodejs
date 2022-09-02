@@ -66,3 +66,12 @@ Set a username on resources when they're created or updated.
 Create a web page for adding a resource, so that you can test the authentication.
 
 //
+
+Exercise 23: Prepare your application for deployment
+
+To get your application ready for deployment to production:
+
+Configure the express-session middleware for production.
+Add project usage instructions to the README.
+
+//

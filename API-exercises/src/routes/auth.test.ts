@@ -18,7 +18,7 @@ describe("GET /auth/login", () => {
     const res = await req
       .get("/auth/login")
       .expect(400)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
     expect(res.text).toContain("Missing redirectTo query string parameter");
   });
@@ -38,7 +38,7 @@ describe("GET /auth/logout", () => {
     const res = await req
       .get("/auth/logout")
       .expect(400)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
     expect(res.text).toContain("Missing redirectTo query string parameter");
   });

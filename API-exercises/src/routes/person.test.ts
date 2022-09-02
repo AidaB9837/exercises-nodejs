@@ -71,18 +71,18 @@ describe("GET /person/:id", () => {
     const res = await req
       .get("/person/18")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(res.text).toContain("Cannot GET /person/18");
+    expect(res.body.message).toContain("Cannot GET /person/18");
   });
 
   test("Invalid personID", async () => {
     const res = await req
       .get("/person/asdf")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(res.text).toContain("Cannot GET /person/asdf");
+    expect(res.body.message).toContain("Cannot GET /person/asdf");
   });
 });
 
@@ -189,9 +189,9 @@ describe("PUT /person/:id", () => {
         age: 45,
       })
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(res.text).toContain("Cannot PUT /person/18");
+    expect(res.body.message).toContain("Cannot PUT /person/18");
   });
 
   test("Invalid personID", async () => {
@@ -203,22 +203,20 @@ describe("PUT /person/:id", () => {
         age: 45,
       })
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(res.text).toContain("Cannot PUT /person/asdf");
+    expect(res.body.message).toContain("Cannot PUT /person/asdf");
   });
 });
 
 // DELETE /person - test to delete a single person
 describe("DELETE /person/:id", () => {
   test("Valid request", async () => {
-    const res = await req
+    await req
       .delete("/person/1")
       .expect(204)
       .expect("Access-Control-Allow-Origin", "http://localhost:8080")
       .expect("Access-Control-Allow-Credentials", "true");
-
-    expect(res.text).toEqual("");
   });
 
   test("Person does not exist", async () => {
@@ -228,18 +226,18 @@ describe("DELETE /person/:id", () => {
     const res = await req
       .delete("/person/18")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(res.text).toContain("Cannot DELETE /person/18");
+    expect(res.body.message).toContain("Cannot DELETE /person/18");
   });
 
   test("Invalid personID", async () => {
     const res = await req
       .delete("/person/asdf")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(res.text).toContain("Cannot DELETE /person/asdf");
+    expect(res.body.message).toContain("Cannot DELETE /person/asdf");
   });
 });
 
@@ -271,9 +269,9 @@ describe("POST /person/:id/photo", () => {
       .post("/person/18/photo")
       .attach("photo", "test-fixtures/photos/file.txt")
       .expect(500)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(res.text).toContain(
+    expect(res.body.message).toContain(
       "Error: The uploaded file must be a JGP or a PNG image."
     );
   });
@@ -286,26 +284,26 @@ describe("POST /person/:id/photo", () => {
       .post("/person/18/photo")
       .attach("photo", "test-fixtures/photos/lisa-williams.png")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(res.text).toContain("Cannot POST /person/18/photo");
+    expect(res.body.message).toContain("Cannot POST /person/18/photo");
   });
 
   test("Invalid personID", async () => {
     const res = await req
       .post("/person/asdf/photo")
       .expect(404)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(res.text).toContain("Cannot POST /person/asdf/photo");
+    expect(res.body.message).toContain("Cannot POST /person/asdf/photo");
   });
 
   test("Invalid request with no file upload", async () => {
     const res = await req
       .post("/person/18/photo")
       .expect(400)
-      .expect("Content-Type", /text\/html/);
+      .expect("Content-Type", /application\/json/);
 
-    expect(res.text).toContain("No photo file uploaded.");
+    expect(res.body.message).toContain("No photo file uploaded.");
   });
 });
